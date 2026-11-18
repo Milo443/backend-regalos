@@ -3,9 +3,11 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Express } from 'express';
 import helmet from 'helmet';
+import swaggerUi from 'swagger-ui-express';
 import { cacheService } from './core/cache/redis.js';
 import { env } from './core/config/env.js';
 import { checkDbHealth } from './core/database/mysql.js';
+import { openApiDocument } from './core/docs/openapi.js';
 import { AppError } from './core/errors/AppError.js';
 import { storageProvider } from './core/storage/StorageProvider.js';
 import { authMiddleware } from './middlewares/auth.middleware.js';
@@ -40,6 +42,7 @@ export function createApp(): Express {
   app.use(
     helmet({
       frameguard: { action: 'sameorigin' },
+      contentSecurityPolicy: false,
     }),
   );
 
@@ -57,6 +60,20 @@ export function createApp(): Express {
   app.use(cookieParser());
   app.use(express.json({ limit: '2mb' }));
   app.use(forensicContextMiddleware);
+
+  const swaggerOptions = {
+    customSiteTitle: 'CEMCOP Entregas · Swagger API',
+    explorer: true,
+  };
+  app.get('/api-docs.json', (_req, res) => {
+    res.json(openApiDocument);
+  });
+  app.get('/api/v1/openapi.json', (_req, res) => {
+    res.json(openApiDocument);
+  });
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocument, swaggerOptions));
+  app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(openApiDocument, swaggerOptions));
+
   app.use('/api/v1', apiRateLimiter);
 
   app.get('/api/v1/health', async (_req, res) => {

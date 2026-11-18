@@ -132,6 +132,18 @@ Respuesta esperada cuando MySQL y el servicio de caché responden (`HTTP 200`):
 
 ---
 
+## Documentación interactiva Swagger (OpenAPI 3.0)
+
+El backend expone documentación interactiva Swagger UI y especificación OpenAPI `3.0.3` para probar todos los endpoints directamente desde el navegador:
+
+- **Swagger UI principal:** `http://localhost:3000/api-docs`
+- **Swagger UI (prefijo API v1):** `http://localhost:3000/api/v1/docs`
+- **Especificación JSON OpenAPI:** `http://localhost:3000/api/v1/openapi.json` (también disponible en `http://localhost:3000/api-docs.json`)
+
+> Para probar rutas protegidas en Swagger UI, ejecuta primero `POST /auth/login` (por ejemplo `admin` / `secret`), copia `access_token` y pégalo en el botón **Authorize** (`bearerAuth`).
+
+---
+
 ## Scripts disponibles
 
 | Script | Comando | Descripción |
